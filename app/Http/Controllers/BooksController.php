@@ -60,14 +60,32 @@ class BooksController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'titulo' => 'required|string|max:255',
+            'sinopsis' => 'required|string',
+            'autor_id' => 'required|exists:autores,id',
+        ]);
+
+        $book = Book::findOrFail($id);
+        $book->update($validated);
+
+        return response()->json($book);
     }
+
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+    
+        try {
+        $Books = Book::findOrFail($id);
+        $Books->delete();
+        return response()->json(['mensaje' => 'Book eliminado']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Book no encontrado', 'message' => $e->getMessage()], 404);
+    }
     }
 }

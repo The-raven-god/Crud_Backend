@@ -22,11 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Authors
-Route::get('/authors', [AuthorsController::class, 'index']); // Obtener todos los authors
-Route::post('/authors/store', [AuthorsController::class, 'store']); // Crear un nuevo autor
-Route::get('/authors/{id}', [AuthorsController::class, 'show']); // Obtener un autor por ID
-Route::put('/authors/{id}', [AuthorsController::class, 'update']); // Actualizar un autor por ID
-Route::delete('/authors/{id}', [AuthorsController::class, 'destroy']); // Eliminar un autor por ID
+Route::get('/authors', [AuthorsController::class, 'index']);
+Route::post('/authors/store', [AuthorsController::class, 'store']);
+Route::delete('/authors/delete/{id}', [AuthorsController::class, 'destroy']);
+Route::get('/authors/{id}', [AuthorsController::class, 'show']);
+Route::put('/authors/update/{id}', [AuthorsController::class, 'update']);
+
 
 //Books 
 Route::get('/books', [BooksController::class, 'index']); // Obtener todos los books

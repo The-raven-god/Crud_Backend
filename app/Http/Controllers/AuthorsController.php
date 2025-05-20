@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class AuthorsController extends Controller
 {
@@ -35,27 +37,24 @@ class AuthorsController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
+        /*return $request;
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|unique:authors,email',
+            'biografia' => 'nullable|string',
+        ]); */
+
+        $author = new Author();
+        $author->nombre = $request->input('nombre');
+        $author->email = $request->input('email'); 
+        $author->biografia = $request->input('biografia');
+        $author->save();
+
+        return response()->json(['message' => 'Autor creado correctamente', 'author' => $author], 201);
         
-    $validated = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:authors,email',
-        'biografia' => 'nullable|string'
-    ]);
-
-    $author = Author::create($validated);
-
-    return response()->json([
-        'message' => 'Autor creado correctamente',
-        'data' => $author
-    ], 201);
-
-
-    $author = Author::create($request->only(['nombre', 'email', 'biografia']));
-
-    return response()->json($author->load('libros'), 201);
-
     }
+
 
     /**
      * Display the specified resource.
@@ -84,7 +83,7 @@ class AuthorsController extends Controller
 
     $validated = $request->validate([
         'nombre' => 'required|string|max:255',
-        'email' => 'required|email|unique:Author,email,' . $id,
+        'email' => 'required|email|max:255' . $id,
         'biografia' => 'nullable|string',
     ]);
 
