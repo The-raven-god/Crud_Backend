@@ -1,66 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Laravel API - Gestión de Autores y Libros
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este repositorio corresponde al backend de una API RESTful desarrollada en Laravel para gestionar autores y sus libros.
 
-## About Laravel
+## 🔧 Requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* PHP >= 8.1
+* Composer
+* Laravel >= 10
+* MySQL o MariaDB
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📁 Estructura del Proyecto
 
-## Learning Laravel
+### 📌 Controladores
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### **`AuthorsController`**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Ubicación: `App\Http\Controllers\AuthorsController`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* `index()` → Retorna todos los autores con sus libros relacionados.
+* `store(Request $request)` → Valida y crea un nuevo autor.
+* `show($id)` → Muestra un autor con sus libros.
+* `update(Request $request, $id)` → Valida y actualiza un autor existente.
+* `destroy($id)` → Elimina un autor (y sus libros por cascada).
 
-## Laravel Sponsors
+#### **`BooksController`**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Ubicación: `App\Http\Controllers\BooksController`
 
-### Premium Partners
+* `index()` → Retorna todos los libros con su autor asociado.
+* `store(Request $request)` → Valida y crea un nuevo libro.
+* `show($id)` → Muestra un libro con su autor.
+* `update(Request $request, $id)` → Valida y actualiza un libro existente.
+* `destroy($id)` → Elimina un libro.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🧩 Modelos Eloquent
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### **`Author`**
 
-## Code of Conduct
+Ubicación: `App\Models\Author`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+protected $table = 'autores';
+protected $fillable = ['nombre', 'email', 'biografia'];
 
-## Security Vulnerabilities
+public function libros() {
+    return $this->hasMany(Book::class, 'autor_id');
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### **`Book`**
 
-## License
+Ubicación: `App\Models\Book`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```php
+protected $table = 'libros';
+protected $fillable = ['titulo', 'sinopsis', 'autor_id'];
+
+public function autor() {
+    return $this->belongsTo(Author::class, 'autor_id');
+}
+```
+
+---
+
+## 🗃 Migraciones de Base de Datos
+
+### 📌 Tabla: `autores`
+
+Ubicación: `database/migrations/xxxx_xx_xx_create_autores_table.php`
+
+```php
+Schema::create('autores', function (Blueprint $table) {
+    $table->id();
+    $table->string('nombre');
+    $table->string('email')->unique();
+    $table->text('biografia')->nullable();
+    $table->timestamps();
+});
+```
+
+### 📌 Tabla: `libros`
+
+Ubicación: `database/migrations/xxxx_xx_xx_create_libros_table.php`
+
+```php
+Schema::create('libros', function (Blueprint $table) {
+    $table->id();
+    $table->string('titulo');
+    $table->text('sinopsis')->nullable();
+    $table->unsignedBigInteger('autor_id');
+    $table->timestamps();
+
+    $table->foreign('autor_id')
+        ->references('id')
+        ->on('autores')
+        ->onDelete('cascade');
+});
+```
+
+---
+
+## 🔗 Relaciones
+
+* **Un autor puede tener muchos libros.**
+* **Cada libro pertenece a un autor.**
+* La eliminación de un autor conlleva la eliminación de todos sus libros por `ON DELETE CASCADE`.
+
+---
+
+## ▶️ Comandos útiles
+
+```bash
+php artisan migrate            # Ejecuta las migraciones
+php artisan migrate:rollback  # Revierte la última migración
+php artisan migrate:fresh --seed # Reinicia la base de datos
+```
+
+---
+
+## 📬 Rutas API
+
+Estas rutas están definidas en `routes/api.php` y permiten interactuar con los controladores `AuthorsController` y `BooksController`.
+
+### 🔹 Autores
+
+* `GET /api/authors` → Obtener todos los autores.
+* `POST /api/authors/store` → Crear un nuevo autor.
+* `GET /api/authors/{id}` → Mostrar un autor por ID.
+* `PUT /api/authors/update/{id}` → Actualizar un autor existente.
+* `DELETE /api/authors/delete/{id}` → Eliminar un autor por ID.
+
+### 🔹 Libros
+
+* `GET /api/books` → Obtener todos los libros.
+* `POST /api/books/store` → Crear un nuevo libro.
+* `GET /api/books/{id}` → Mostrar un libro por ID.
+* `PUT /api/books/{id}` → Actualizar un libro por ID.
+* `DELETE /api/books/{id}` → Eliminar un libro por ID.
+
+---
+
+## 🌱 Seeders y Factories
+
+Laravel utiliza *Factories* y *Seeders* para poblar la base de datos de prueba con datos realistas.
+
+### 🔧 Factories
+
+#### `AuthorFactory`
+
+Ubicación: `database/factories/AuthorFactory.php`
+
+```php
+public function definition(): array
+{
+    return [
+        'nombre' => $this->faker->name(),
+        'email' => $this->faker->unique()->safeEmail(),
+        'biografia' => $this->faker->paragraph(),
+    ];
+}
+```
+
+#### `BookFactory`
+
+Ubicación: `database/factories/BookFactory.php`
+
+```php
+public function definition(): array
+{
+    return [
+        'titulo' => $this->faker->sentence(),
+        'sinopsis' => $this->faker->paragraph(),
+        'autor_id' => Author::inRandomOrder()->first()->id,
+    ];
+}
+```
+
+### 🌱 Seeders
+
+#### `AuthorSeeder`
+
+```php
+public function run(): void
+{
+    Author::factory()->count(10)->create();
+}
+```
+
+#### `BookSeeder`
+
+```php
+public function run(): void
+{
+    Book::factory()->count(20)->create();
+}
+```
+
+#### `DatabaseSeeder`
+
+```php
+public function run(): void
+{
+    $this->call(AuthorSeeder::class);
+    $this->call(BookSeeder::class);
+}
+```
+
+Para ejecutar los seeders, puedes usar:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Esto eliminará y volverá a crear todas las tablas, insertando registros generados automáticamente.
+
+---
+
+## ✍️ Autor
+
+**Santiago Rueda Quintero** - Backend API para gestión de libros y autores.
+
+---
+
+¿Deseas también agregar autenticación, Swagger (OpenAPI), pruebas unitarias o seeders? Avísame y lo incluimos fácilmente. ✅
+
