@@ -7,7 +7,7 @@ Este repositorio corresponde al backend de una API RESTful desarrollada en Larav
 * PHP >= 8.1
 * Composer
 * Laravel >= 10
-* MySQL o MariaDB
+* MySQL
 
 ---
 
@@ -225,6 +225,4 @@ Esto eliminará y volverá a crear todas las tablas, insertando registros genera
 **Santiago Rueda Quintero** - Backend API para gestión de libros y autores.
 
 ---
-
-¿Deseas también agregar autenticación, Swagger (OpenAPI), pruebas unitarias o seeders? Avísame y lo incluimos fácilmente. ✅
 
