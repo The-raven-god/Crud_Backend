@@ -30,8 +30,8 @@ Route::put('/authors/update/{id}', [AuthorsController::class, 'update']);
 
 
 //Books 
-Route::get('/books', [BooksController::class, 'index']); // Obtener todos los books
-Route::post('/books/store', [BooksController::class, 'store']); // Crear un nuevo libro
-Route::get('/books/{id}', [BooksController::class, 'show']); // Obtener un libro por ID
-Route::put('/books/{id}', [BooksController::class, 'update']); // Actualizar un libro por ID
-Route::delete('/books/{id}', [BooksController::class, 'destroy']); // Eliminar un libro por ID
+Route::get('/books', [BooksController::class, 'index']);
+Route::post('/books/store', [BooksController::class, 'store']); 
+Route::get('/books/{id}', [BooksController::class, 'show']); 
+Route::put('/books/{id}', [BooksController::class, 'update']); 
+Route::delete('/books/{id}', [BooksController::class, 'destroy']); 
