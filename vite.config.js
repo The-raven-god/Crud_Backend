@@ -8,4 +8,13 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    test: {
+        environment: 'jsdom',
+        globals: true,
+        setupFiles: './tests/setup.js',
+        coverage: {
+            reporter: ['text', 'json', 'html'],
+            exclude: ['resources/js/app.js'],
+        },
+    },
 });
